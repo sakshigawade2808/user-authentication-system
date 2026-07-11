@@ -1,13 +1,19 @@
 const express = require("express");
-require("dotenv").config();
-
-const db = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
+const dotenv = require("dotenv");
 const path = require("path");
 const session = require("express-session");
 
+dotenv.config();
+
+const db = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
+
+// Trust proxy (Required for Render)
+app.set("trust proxy", 1);
+
+// View Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -15,45 +21,46 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Session
 app.use(
-  session({
-    secret: "sakshi_secret_key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 30 * 60 * 1000
-    }
-  })
+    session({
+        secret: process.env.SESSION_SECRET || "sakshi_secret_key",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 30 * 60 * 1000,
+            secure: false
+        }
+    })
 );
 
 // Routes
 app.use("/", authRoutes);
-// Home Route
-app.get("/", (req, res) => {
-  res.send("User Authentication Project Started");
-});
 
+// Registration Page
 app.get("/register", (req, res) => {
     res.render("register");
 });
 
+// Login Page
 app.get("/login", (req, res) => {
     res.render("login");
 });
 
+// Forgot Password
 app.get("/forgot-password", (req, res) => {
     res.render("forgotPassword");
 });
 
+// Reset Password
 app.get("/reset-password/:token", (req, res) => {
-
-    const token = req.params.token;
-
     res.render("resetPassword", {
-        token
+        token: req.params.token
     });
-
 });
+
+// Dashboard
 app.get("/dashboard", (req, res) => {
 
     if (!req.session.user) {
@@ -66,6 +73,24 @@ app.get("/dashboard", (req, res) => {
 
 });
 
+// Admin Panel
+app.get("/admin", (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    if (req.session.user.role !== "Admin") {
+        return res.status(403).send("Access Denied");
+    }
+
+    res.render("admin", {
+        user: req.session.user
+    });
+
+});
+
+// Logout
 app.get("/logout", (req, res) => {
 
     req.session.destroy((err) => {
@@ -80,27 +105,14 @@ app.get("/logout", (req, res) => {
 
 });
 
-app.get("/admin", (req, res) => {
-
-    // Check if user is logged in
-    if (!req.session.user) {
-        return res.redirect("/login");
-    }
-
-    // Check if user is Admin
-    if (req.session.user.role !== "Admin") {
-        return res.send("Access Denied");
-    }
-
-    // Show Admin page
-    res.render("admin", {
-        user: req.session.user
-    });
-
+// 404 Page
+app.use((req, res) => {
+    res.status(404).send("404 - Page Not Found");
 });
 
+// Start Server
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
 });

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#f452c9,#3107d9);
+}
+
+.admin-box{
+    width:420px;
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.icon{
+    width:80px;
+    height:80px;
+    background:#007BFF;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    margin:0 auto 20px;
+}
+
+h1{
+    color:#333;
+    margin-bottom:15px;
+}
+
+h2{
+    color:#007BFF;
+    margin-bottom:20px;
+}
+
+.message{
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:8px;
+    margin-bottom:25px;
+    font-size:18px;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    color:white;
+    cursor:pointer;
+    background:#28a745;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#218838;
+}
+
+a{
+    text-decoration:none;
+}
+</style>
+
+</head>
+<body>
+
+<div class="admin-box">
+
+    <div class="icon">
+        👨‍💼
+    </div>
+
+    <h1>Admin Panel</h1>
+
+    <h2>Welcome, <%= user.full_name %></h2>
+
+    <div class="message">
+        You are logged in as <strong>Admin</strong>.
+    </div>
+
+    <a href="/dashboard">
+        <button class="btn">Back to Dashboard</button>
+    </a>
+
+</div>
+
+</body>
+</html>

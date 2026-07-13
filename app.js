@@ -5,12 +5,12 @@ const session = require("express-session");
 
 dotenv.config();
 
-const db = require("./config/db");
+require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-// Trust proxy (Required for Render)
+// Trust proxy (Railway)
 app.set("trust proxy", 1);
 
 // View Engine
@@ -35,7 +35,12 @@ app.use(
     })
 );
 
-// Routes
+// ================= HOME ROUTE =================
+app.get("/", (req, res) => {
+    res.redirect("/login");
+});
+
+// Authentication Routes
 app.use("/", authRoutes);
 
 // Registration Page
